@@ -1,4 +1,4 @@
-# على خطى مريم نسير معاً — QR Code Site
+# مسيرة السيدة — QR Code Site
 
 A mobile-first React page meant to be opened by scanning a QR code, plus a
 matching PDF. All of the visible text lives in one file.
@@ -167,55 +167,71 @@ prints from a phone on the same Wi-Fi.
 
 ## 5. Publish it
 
-The build output is a plain static folder (`dist`), so any static host works.
-Build command: `npm run build`. Publish directory: `dist`.
+### GitHub Pages (set up and ready)
 
-### The quickest way — Vercel from this folder
+`.github/workflows/deploy.yml` builds and publishes the site on every push to
+`main`, so publishing an update is just: edit the text, commit, push.
 
-No Git repository needed. In this folder, run:
+One-time setup:
+
+1. Create an empty repository on GitHub — **public**, since GitHub Pages on a
+   free account only serves public repositories. Do not add a README or a
+   `.gitignore`; this folder already has both.
+2. Connect and push:
+
+```bash
+git remote add origin https://github.com/<your-username>/<your-repo>.git
+```
+
+```bash
+git push -u origin main
+```
+
+3. On GitHub: **Settings → Pages → Build and deployment → Source: GitHub
+   Actions**. That is the only click needed; the workflow does the rest.
+4. Watch the **Actions** tab. When it finishes, the URL appears there and
+   under Settings → Pages. It looks like
+   `https://<your-username>.github.io/<your-repo>/` — **that is the URL for
+   the QR code.**
+
+The build reads the repository name automatically (`BASE_PATH` in the
+workflow), so the asset paths and the PDF link stay correct even if the repo
+is renamed later.
+
+To publish a change afterwards:
+
+```bash
+git add -A && git commit -m "Update text" && git push
+```
+
+### Alternative — Vercel
+
+No repository needed and it gives a shorter URL:
 
 ```bash
 npx vercel login
 ```
 
-Then:
-
 ```bash
 npx vercel --prod
 ```
 
-It asks a few questions — accept the defaults (framework: Vite, build
-command: `npm run build`, output: `dist`). It prints a permanent URL like
-`https://qr-content-site.vercel.app`. **That is the URL for the QR code.**
+Accept the defaults (framework: Vite, output: `dist`). Nothing in the project
+needs changing — the base path only applies when `BASE_PATH` is set, which
+only the Pages workflow does.
 
-To publish again after changing the text, run `npx vercel --prod` again. The
-URL stays the same, so the QR code keeps working forever.
+### Alternative — Netlify or Cloudflare Pages
 
-### Alternative — connect a Git repository
-
-Better if you want every push to deploy automatically. Put the folder on
-GitHub, then import it at vercel.com, app.netlify.com or dash.cloudflare.com
-(Cloudflare Pages preset: "Vite"). All three detect the settings on their own.
-
-### Alternative — Netlify without Git
-
-```bash
-npx netlify deploy --prod --dir=dist
-```
-
-Run `npm run build` first, since this uploads `dist` as-is.
-
-### GitHub Pages
-
-Needs one change first. If the site will live at
-`https://<user>.github.io/<repo>/`, open `vite.config.js` and set
-`base: '/<repo>/'`, then rebuild and publish `dist`.
+Build command `npm run build`, publish directory `dist`. Either import the
+GitHub repository at app.netlify.com / dash.cloudflare.com, or upload
+directly with `npx netlify deploy --prod --dir=dist` after a build.
 
 ### Two rules that matter for the QR code
 
 1. **Use the production URL, not a preview URL.** Vercel and Netlify also
    print per-deploy preview URLs (with a hash in them) — those change every
-   time you deploy and will break the QR code.
+   time you deploy and will break the QR code. The GitHub Pages URL has no
+   such problem: it is stable as long as the repository keeps its name.
 2. **A custom domain is the safest target.** If you point the QR code at your
    own domain, you can move hosts or rebuild the site later without ever
    reprinting the code. Add it under the host's Domains settings before
