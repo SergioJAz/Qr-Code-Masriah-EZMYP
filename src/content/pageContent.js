@@ -392,7 +392,7 @@ export const pageContent = {
   ],
 
   // Small text at the very bottom. Set to '' to hide the footer.
-  footer: '',
+  footer: 'Made by Sergio Azizi',
 
   // Link to the PDF version, shown as a download button at the bottom.
   // Set to '' to hide the button.

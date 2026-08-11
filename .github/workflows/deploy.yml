@@ -30,13 +30,19 @@ jobs:
 
       - run: npm ci
 
+      - name: Work out the base path
+        # Pages serves this repo from /<repo>/, so that prefix has to be baked
+        # into the asset URLs. A custom domain serves from the root instead —
+        # adding public/CNAME is how you switch, and this picks that up.
+        run: |
+          if [ -f public/CNAME ]; then
+            echo "BASE_PATH=/" >> "$GITHUB_ENV"
+          else
+            echo "BASE_PATH=/${{ github.event.repository.name }}/" >> "$GITHUB_ENV"
+          fi
+
       - name: Build
-        # GitHub Pages serves this repo from /<repo>/, so the assets need that
-        # prefix baked in. `github.event.repository.name` keeps it correct even
-        # if the repository is renamed.
         run: npm run build
-        env:
-          BASE_PATH: /${{ github.event.repository.name }}/
 
       - uses: actions/configure-pages@v5
 
