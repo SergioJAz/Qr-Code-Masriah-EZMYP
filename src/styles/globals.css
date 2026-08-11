@@ -273,8 +273,10 @@ table {
 
 /* --- Optional PDF button --------------------------------------------------- */
 
+/* Sits directly under the header, above the contents list — the first thing
+   a reader sees after the title, so the PDF is one tap away. */
 .actions {
-  margin-top: var(--space-block);
+  margin-bottom: calc(var(--space-block) * 0.75);
 }
 
 .button {

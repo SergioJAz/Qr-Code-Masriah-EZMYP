@@ -45,6 +45,14 @@ export default function Home() {
         logoAlt={logoAlt}
       />
 
+      {pdfUrl ? (
+        <p className="actions">
+          <a className="button" href={pdfHref} download>
+            {pdfLabel || 'Download PDF'}
+          </a>
+        </p>
+      ) : null}
+
       {showContents ? <TableOfContents label={contentsLabel} entries={entries} /> : null}
 
       <main id="content">
@@ -57,14 +65,6 @@ export default function Home() {
             items={section.items}
           />
         ))}
-
-        {pdfUrl ? (
-          <p className="actions">
-            <a className="button" href={pdfHref} download>
-              {pdfLabel || 'Download PDF'}
-            </a>
-          </p>
-        ) : null}
       </main>
 
       <Footer text={footer} />
