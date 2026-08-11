@@ -58,34 +58,32 @@ address it prints, from a phone on the same Wi-Fi.
 
 ## Publish
 
-`.github/workflows/deploy.yml` builds and publishes on every push to `main`.
-
-One-time setup:
-
-1. Create an empty **public** repo on GitHub (Pages is free only on public
-   repos). No README, no `.gitignore` — this folder has both.
-2. Connect and push:
+Hosted on Vercel. First time:
 
 ```bash
-git remote add origin https://github.com/<your-username>/<your-repo>.git
+npx vercel login
 ```
 
 ```bash
-git push -u origin main
+npx vercel --prod
 ```
 
-3. On GitHub: **Settings → Pages → Source: GitHub Actions**.
-4. The URL appears in the **Actions** tab when the run finishes:
-   `https://<your-username>.github.io/<your-repo>/`
+Accept the detected settings (Vite / `npm run build` / `dist`). When it asks
+for a project name, give it `masirat-el-saydeh` — that becomes the URL.
 
-Publishing a change afterwards:
+Publishing a change afterwards is the same command:
 
 ```bash
-git add -A && git commit -m "Update text" && git push
+npx vercel --prod
 ```
 
-The repo name is read automatically at build time, so asset paths stay correct
-if it is renamed.
+The URL stays the same every time, so the QR code keeps working.
+
+### Custom domain
+
+Add it under the Vercel project's **Settings → Domains** and follow the DNS
+instructions. Nothing in the project needs changing — the build already
+assumes it is served from the root.
 
 ---
 
