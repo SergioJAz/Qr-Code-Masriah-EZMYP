@@ -1,0 +1,450 @@
+/* ---------------------------------------------------------------------------
+   Mobile-first styles.
+
+   Sizing is fluid rather than stepped: type, spacing and page padding scale
+   continuously with the viewport via clamp(), so there is no sudden jump at a
+   breakpoint and every in-between width (小 phones, big phones, folded/split
+   screens, tablets) gets a sensible layout. Media queries are used only for
+   the few things that genuinely need a structural change.
+
+   Every clamp() mixes rem with vw, never vw alone, so browser zoom and the
+   user's own font-size setting still work.
+
+   Reference points:
+     320px  small phone   17px body / 28px title
+     390px  typical phone 17px body / 30px title
+     768px  tablet        18px body / 36px title
+    1280px+ desktop       19px body / 40px title, 42rem reading column
+   --------------------------------------------------------------------------- */
+
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #f6f7f9;
+  --color-text: #1a1d23;
+  --color-text-muted: #5a616e;
+  --color-border: #e2e5ea;
+  --color-accent: #1f4fd8;
+
+  /* Reading column. Capped in ch-adjacent terms: ~70 characters per line is
+     the comfortable maximum, which is why this does not grow on 4K screens. */
+  --content-width: 42rem;
+
+  /* 18px on a small phone → 40px on desktop. */
+  --page-padding: clamp(1.125rem, 0.75rem + 1.7vw, 2.5rem);
+
+  /* Vertical rhythm scales with the page too, so wide screens do not look
+     cramped and narrow ones do not waste height. */
+  --space-block: clamp(1.75rem, 1.25rem + 2vw, 2.75rem);
+
+  --font-size-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --font-size-title: clamp(1.75rem, 1.35rem + 1.75vw, 2.5rem);
+  --font-size-heading: clamp(1.1875rem, 1.05rem + 0.6vw, 1.45rem);
+  --font-size-small: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+
+  /* Latin faces first, then Arabic system faces. A browser falls through this
+     list per character, so Arabic text automatically lands on the Arabic
+     fonts while Latin text and digits keep the interface font. All of these
+     ship with the OS — no downloads, no external requests. */
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Segoe UI Arabic', 'Geeza Pro', 'Noto Naskh Arabic', 'Noto Sans Arabic',
+    'Arabic Typesetting', Tahoma, sans-serif;
+}
+
+/* --- Arabic / right-to-left ------------------------------------------------
+   Applied when the content file sets dir: 'rtl'. Mirroring itself is handled
+   by the browser plus the logical properties used throughout this file
+   (margin-inline, padding-inline, text-align: start) — the rules below only
+   correct typography that Latin defaults get wrong for Arabic script.
+   --------------------------------------------------------------------------- */
+
+[dir='rtl'] {
+  /* Arabic has a smaller effective x-height, so the same nominal size reads
+     smaller. A modest bump evens it out. */
+  --font-size-body: clamp(1.1875rem, 1.1rem + 0.3vw, 1.3125rem);
+  --font-size-title: clamp(1.875rem, 1.45rem + 1.85vw, 2.625rem);
+  --font-size-heading: clamp(1.3125rem, 1.15rem + 0.65vw, 1.5625rem);
+  --font-size-small: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+}
+
+[dir='rtl'] body {
+  /* Arabic needs more leading: diacritics sit above and descenders below. */
+  line-height: 1.9;
+}
+
+[dir='rtl'] .header__title,
+[dir='rtl'] .section__heading {
+  /* Negative tracking pulls joined Arabic letterforms into each other. */
+  letter-spacing: 0;
+  line-height: 1.45;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0f1115;
+    --color-surface: #171a21;
+    --color-text: #e9ecf1;
+    --color-text-muted: #a2aab8;
+    --color-border: #2a2f39;
+    --color-accent: #7ea2ff;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Stops iOS Safari inflating text when the phone is rotated. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  /* Belt and braces: nothing may push the page sideways on a phone. */
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+p,
+ol,
+ul {
+  margin: 0;
+  /* Long URLs and unbroken strings wrap instead of causing side-scroll. */
+  overflow-wrap: break-word;
+}
+
+/* Anything embedded later (image, iframe, table) stays inside the column. */
+img,
+svg,
+video,
+iframe,
+table {
+  max-width: 100%;
+}
+
+/* --- Layout ---------------------------------------------------------------- */
+
+.page {
+  width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-top: clamp(2rem, 1.5rem + 2vw, 4rem);
+  padding-bottom: clamp(3rem, 2.5rem + 2vw, 5rem);
+  /* max() keeps the text clear of the iPhone notch in landscape without
+     shrinking the padding on any device that has no inset. */
+  padding-left: max(var(--page-padding), env(safe-area-inset-left));
+  padding-right: max(var(--page-padding), env(safe-area-inset-right));
+}
+
+/* --- Header ---------------------------------------------------------------- */
+
+.header {
+  padding-bottom: calc(var(--space-block) * 0.65);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-block);
+}
+
+.header__logo {
+  display: block;
+  width: clamp(6.5rem, 5rem + 6vw, 9rem);
+  height: auto;
+  margin: 0 auto 1.25rem;
+}
+
+.header__title {
+  font-size: var(--font-size-title);
+  /* Tighter leading as the type grows — large headings need less air. */
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+  /* Avoids a lone word on the last line of a wrapped title. */
+  text-wrap: balance;
+}
+
+.header__subtitle {
+  margin-top: 0.6rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body);
+  text-wrap: pretty;
+}
+
+.header__meta {
+  margin-top: 0.75rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+
+/* --- Table of contents ----------------------------------------------------- */
+
+.contents {
+  margin-bottom: var(--space-block);
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.6rem;
+  background: var(--color-surface);
+}
+
+.contents__label {
+  font-size: var(--font-size-small);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 0.65rem;
+}
+
+[dir='rtl'] .contents__label {
+  letter-spacing: 0;
+}
+
+.contents__list {
+  /* Logical padding, so the numbers sit on the correct side in Arabic. */
+  margin: 0;
+  padding-inline-start: 1.25rem;
+}
+
+.contents__list li + li {
+  margin-top: 0.15rem;
+}
+
+.contents__link {
+  /* Generous vertical padding: these are the main tap targets on a phone. */
+  display: inline-block;
+  padding: 0.35rem 0;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.contents__link:hover,
+.contents__link:focus-visible {
+  text-decoration: underline;
+}
+
+/* --- Sections -------------------------------------------------------------- */
+
+.section + .section {
+  margin-top: var(--space-block);
+}
+
+/* Stops a jump link from parking its heading right against the top edge. */
+.section {
+  scroll-margin-top: 1.25rem;
+}
+
+.subsection {
+  margin-top: calc(var(--space-block) * 0.8);
+}
+
+.subsection__heading {
+  font-size: var(--font-size-body);
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+  color: var(--color-accent);
+  text-wrap: balance;
+}
+
+.section__heading {
+  font-size: var(--font-size-heading);
+  line-height: 1.35;
+  font-weight: 650;
+  margin-bottom: 0.6rem;
+  text-wrap: balance;
+}
+
+.section__body {
+  /* Stops the browser leaving a single word stranded on the final line. */
+  text-wrap: pretty;
+}
+
+.section__body + .section__body {
+  margin-top: 1rem;
+}
+
+/* --- Optional PDF button --------------------------------------------------- */
+
+.actions {
+  margin-top: var(--space-block);
+}
+
+.button {
+  display: inline-block;
+  /* Comfortably above the 44px minimum tap target on a phone. */
+  min-height: 3rem;
+  padding: 0.85rem 1.35rem;
+  border-radius: 0.5rem;
+  background: var(--color-accent);
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .button {
+    color: #0f1115;
+  }
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* On a phone the button spans the column so it is impossible to mis-tap;
+   from tablet width up it shrinks to fit its label. */
+@media (max-width: 29.99rem) {
+  .button {
+    display: block;
+    text-align: center;
+  }
+}
+
+/* Pointer-based devices get a hover state; touch devices never see it. */
+@media (hover: hover) {
+  .button {
+    transition: opacity 0.15s ease;
+  }
+
+  .button:hover {
+    opacity: 0.88;
+  }
+}
+
+/* --- Footer ---------------------------------------------------------------- */
+
+.footer {
+  margin-top: clamp(2.5rem, 2rem + 2vw, 4rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+
+/* --- Landscape phone ------------------------------------------------------- */
+
+/* A phone on its side has very little height; reclaim the vertical padding
+   so the first lines of content are visible without scrolling. */
+@media (orientation: landscape) and (max-height: 30rem) {
+  .page {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+}
+
+/* --- Accessibility --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --- Print / "Save as PDF" ------------------------------------------------- */
+
+@media print {
+  /* Margins live here, not on .page, so they repeat on every printed page. */
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+  }
+
+  :root {
+    --color-bg: #ffffff;
+    --color-text: #000000;
+    --color-text-muted: #333333;
+    --color-border: #999999;
+    /* 12pt rather than the usual 11pt: the PDF may be read on a phone. */
+    --font-size-body: 12pt;
+    --font-size-title: 22pt;
+    --font-size-heading: 14pt;
+    --font-size-small: 10pt;
+  }
+
+  [dir='rtl'] {
+    --font-size-body: 13pt;
+    --font-size-title: 23pt;
+    --font-size-heading: 15pt;
+    --font-size-small: 11pt;
+  }
+
+  body {
+    background: #ffffff;
+    line-height: 1.6;
+  }
+
+  [dir='rtl'] body {
+    line-height: 1.85;
+  }
+
+  .page {
+    max-width: none;
+    padding: 0;
+  }
+
+  /* Neither the download button nor the jump links mean anything on paper. */
+  .actions,
+  .contents {
+    display: none;
+  }
+
+  .header__logo {
+    width: 28mm;
+    margin-bottom: 6mm;
+  }
+
+  /* Mysteries are allowed to flow across a page break: forcing each one onto
+     a single page costs six extra pages (23 instead of 17) in exchange for
+     large gaps at the foot of most pages. Change to `avoid` if you would
+     rather each mystery stayed whole for use while praying. */
+  .subsection {
+    margin-top: 5mm;
+    break-inside: auto;
+  }
+
+  .subsection__heading {
+    color: #000000;
+    break-after: avoid;
+  }
+
+  .header {
+    margin-bottom: 8mm;
+    padding-bottom: 5mm;
+  }
+
+  .section + .section {
+    margin-top: 7mm;
+  }
+
+  /* Sections here run for pages, so they must be allowed to break; it is the
+     individual mysteries that are kept whole (see .subsection below). */
+  .section {
+    break-inside: auto;
+  }
+
+  /* Never strand a heading at the foot of a page with its text overleaf. */
+  .section__body {
+    orphans: 2;
+    widows: 2;
+  }
+
+  .section__heading {
+    break-after: avoid;
+  }
+
+  .footer {
+    margin-top: 10mm;
+  }
+}

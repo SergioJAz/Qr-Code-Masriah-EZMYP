@@ -1,0 +1,22 @@
+{
+  "name": "masirat-el-saydeh",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "qr": "node scripts/generate-qr.mjs",
+    "pdf": "npm run build && node scripts/generate-pdf.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.4",
+    "qrcode": "^1.5.4",
+    "vite": "^7.1.9"
+  }
+}
