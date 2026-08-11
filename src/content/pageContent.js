@@ -400,6 +400,11 @@ export const pageContent = {
   // IMPORTANT: the PDF is a snapshot of this text. After changing anything
   // above, regenerate it with `npm run pdf`, or the download will still hold
   // the old wording.
-  pdfUrl: '/document.pdf',
+  pdfUrl: '/masirat-el-saydeh.pdf',
+
+  // The name the file gets when it lands in the reader's downloads. Arabic is
+  // fine here — unlike pdfUrl, which stays ASCII so the web address is clean.
+  pdfFileName: 'على خطى مريم نسير معاً.pdf',
+
   pdfLabel: 'تحميل نسخة PDF',
 };

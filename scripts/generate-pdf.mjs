@@ -4,9 +4,11 @@
  *   npm run pdf              A4 — for printing and desktop reading
  *   npm run pdf -- --mobile  phone-shaped pages — no zooming needed
  *
- * Writes to public/document.pdf (and copies it into dist/ if a build exists),
- * so setting `pdfUrl: '/document.pdf'` in src/content/pageContent.js puts a
- * download button on the website.
+ * Writes to public/masirat-el-saydeh.pdf (and copies it into dist/ if a build
+ * exists), which is the file `pdfUrl` points at in src/content/pageContent.js.
+ * Rename it in both places to change it; keep the name ASCII so the URL stays
+ * clean, and use `pdfFileName` for the Arabic name the reader actually sees
+ * when the file lands in their downloads.
  *
  * No extra npm packages: this drives the copy of Edge or Chrome already
  * installed on the machine, in headless mode. Set the PDF_BROWSER environment
@@ -23,7 +25,8 @@ import path from 'node:path';
 
 const mobile = process.argv.includes('--mobile');
 const distDir = path.resolve('dist');
-const outFile = path.resolve('public', 'document.pdf');
+const pdfName = 'masirat-el-saydeh.pdf';
+const outFile = path.resolve('public', pdfName);
 
 if (!existsSync(distDir)) {
   console.error('No dist/ folder found. Run `npm run build` first.');
@@ -207,11 +210,11 @@ const { size } = await stat(outFile);
 
 // Keep the served copy in sync so the download link works without a rebuild.
 if (existsSync(distDir)) {
-  await copyFile(outFile, path.join(distDir, 'document.pdf'));
+  await copyFile(outFile, path.join(distDir, pdfName));
 }
 
 console.log(`Browser: ${browser}`);
 console.log(`Format:  ${mobile ? 'mobile (95 x 165 mm)' : 'A4'}`);
 console.log(`Written: ${outFile} (${Math.round(size / 1024)} kB)`);
 console.log('\nTo offer it as a download on the site, set this in src/content/pageContent.js:');
-console.log("  pdfUrl: '/document.pdf'");
+console.log(`  pdfUrl: '/${pdfName}'`);

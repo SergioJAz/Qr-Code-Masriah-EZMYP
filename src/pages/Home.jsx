@@ -18,6 +18,7 @@ export default function Home() {
     sections,
     footer,
     pdfUrl,
+    pdfFileName,
     pdfLabel,
   } = pageContent;
 
@@ -47,7 +48,7 @@ export default function Home() {
 
       {pdfUrl ? (
         <p className="actions">
-          <a className="button" href={pdfHref} download>
+          <a className="button" href={pdfHref} download={pdfFileName || true}>
             {pdfLabel || 'Download PDF'}
           </a>
         </p>
